@@ -1,5 +1,6 @@
 import nltk
-nltk.download('averaged_perceptron_tagger')
+#nltk.download('averaged_perceptron_tagger')
+#nltk.download('punkt')
 sentence = "I want to book a flight for 4 persons from New York to Amsterdam"
 tokens =nltk.word_tokenize(sentence)
 print(tokens)
