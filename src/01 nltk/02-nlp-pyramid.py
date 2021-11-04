@@ -34,8 +34,8 @@ import nltk
 
 
 # Two dictionary downloads (only first time)
-# nltk.download('maxent_ne_chunker')
-# nltk.download('words')
+nltk.download('maxent_ne_chunker')
+nltk.download('words')
  
 text = "John works at Intel."
 text = "I saw a man on a hill with a telescope"
