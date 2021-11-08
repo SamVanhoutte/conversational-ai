@@ -1,0 +1,20 @@
+{
+  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "$role": "implements(Microsoft.IDialog)",
+  "title": "StockStatus",
+  "description": "Shows status of the given Stock",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "stocksymbol": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "StockSymbol",
+      "description": "The actual Ticker of the stock"
+    },
+    "resultProperty": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "Result",
+      "description": "The actual result"
+    }
+  }
+}

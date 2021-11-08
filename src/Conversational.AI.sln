@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuisListEntityGenerator", "LuisListEntityGenerator\LuisListEntityGenerator.csproj", "{761DD69D-6B7A-4DC6-95FC-85DA02EA5366}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradersBot", "03-bot\TradersBot\TradersBot\TradersBot.csproj", "{0439888E-4456-407A-8A3D-86F8366EEC77}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{761DD69D-6B7A-4DC6-95FC-85DA02EA5366}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{761DD69D-6B7A-4DC6-95FC-85DA02EA5366}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{761DD69D-6B7A-4DC6-95FC-85DA02EA5366}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0439888E-4456-407A-8A3D-86F8366EEC77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0439888E-4456-407A-8A3D-86F8366EEC77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0439888E-4456-407A-8A3D-86F8366EEC77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0439888E-4456-407A-8A3D-86F8366EEC77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -16,5 +16,8 @@ namespace LuisListEntityGenerator
         
         [Option('l', "columnlist", Required = true, HelpText = "The columns (comma seperated) that will be added as list to the entity.")]
         public string ColumnList { get; set; }
+        
+        [Option('d', "delimiter", Default = ",", Required = false, HelpText = "The delimiter for the csv parsing.")]
+        public string Delimiter { get; set; }
     }
 }
