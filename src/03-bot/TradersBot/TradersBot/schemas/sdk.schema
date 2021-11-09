@@ -339,6 +339,9 @@
     },
     {
       "$ref": "#/definitions/Microsoft.UrlEntityRecognizer"
+    },
+    {
+      "$ref": "#/definitions/StockStatusDialog"
     }
   ],
   "definitions": {
@@ -4069,6 +4072,9 @@
         },
         {
           "$ref": "#/definitions/Microsoft.UpdateActivity"
+        },
+        {
+          "$ref": "#/definitions/StockStatusDialog"
         },
         {
           "type": "string",
@@ -9462,6 +9468,46 @@
       "description": "Defines the role played in the dialog schema from [expression|interface|implements($kind)|extends($kind)].",
       "type": "string",
       "pattern": "^((expression)|(interface)|(implements\\([a-zA-Z][a-zA-Z0-9.]*\\))|(extends\\([a-zA-Z][a-zA-Z0-9.]*\\)))$"
+    },
+    "StockStatusDialog": {
+      "$role": "implements(Microsoft.IDialog)",
+      "title": "StockStatus",
+      "description": "Shows status of the given Stock",
+      "type": "object",
+      "required": [
+        "$kind"
+      ],
+      "additionalProperties": false,
+      "patternProperties": {
+        "^\\$": {
+          "title": "Tooling property",
+          "description": "Open ended property for tooling."
+        }
+      },
+      "properties": {
+        "stocksymbol": {
+          "$ref": "#/definitions/stringExpression",
+          "title": "StockSymbol",
+          "description": "The actual Ticker of the stock"
+        },
+        "resultProperty": {
+          "$ref": "#/definitions/stringExpression",
+          "title": "Result",
+          "description": "The actual result"
+        },
+        "$kind": {
+          "title": "Kind of dialog object",
+          "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$",
+          "const": "StockStatusDialog"
+        },
+        "$designer": {
+          "title": "Designer information",
+          "type": "object",
+          "description": "Extra information for the Bot Framework Composer."
+        }
+      }
     },
     "stringExpression": {
       "$role": "expression",
