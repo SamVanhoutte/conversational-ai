@@ -1,6 +1,5 @@
-using TradersBot.CustomActions;
 
-namespace TradersBot.Components
+namespace TradersBot.CustomLogic
 {
     using Microsoft.Bot.Builder;
     using Microsoft.Bot.Builder.Dialogs.Declarative;

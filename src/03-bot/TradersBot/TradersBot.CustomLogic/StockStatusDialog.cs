@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,7 +6,7 @@ using AdaptiveExpressions.Properties;
 using Microsoft.Bot.Builder.Dialogs;
 using Newtonsoft.Json;
 
-namespace TradersBot.CustomActions
+namespace TradersBot.CustomLogic
 {
     public class StockStatusDialog : Dialog
     {

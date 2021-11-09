@@ -9469,11 +9469,11 @@
       "type": "string",
       "pattern": "^((expression)|(interface)|(implements\\([a-zA-Z][a-zA-Z0-9.]*\\))|(extends\\([a-zA-Z][a-zA-Z0-9.]*\\)))$"
     },
-    "StockStatusDialog": {
+    "TradersBot.CustomLogic.StockStatusDialog": {
       "$role": "implements(Microsoft.IDialog)",
       "title": "StockStatus",
       "description": "Shows status of the given Stock",
-      "type": "object",
+      "type": "object", 
       "required": [
         "$kind"
       ],
