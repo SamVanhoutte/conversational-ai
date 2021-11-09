@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradersBot", "03-bot\Trader
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradersBot.CustomLogic", "03-bot\TradersBot\TradersBot.CustomLogic\TradersBot.CustomLogic.csproj", "{9CF8BF63-AD23-48A5-9F48-245D6E2AD0CE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NasdaqBot", "03-bot\NasdaqBot\NasdaqBot.csproj", "{62CD53E0-85C8-4C55-AD8B-4B0D3A3B56CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{9CF8BF63-AD23-48A5-9F48-245D6E2AD0CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9CF8BF63-AD23-48A5-9F48-245D6E2AD0CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9CF8BF63-AD23-48A5-9F48-245D6E2AD0CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62CD53E0-85C8-4C55-AD8B-4B0D3A3B56CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62CD53E0-85C8-4C55-AD8B-4B0D3A3B56CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62CD53E0-85C8-4C55-AD8B-4B0D3A3B56CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62CD53E0-85C8-4C55-AD8B-4B0D3A3B56CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
