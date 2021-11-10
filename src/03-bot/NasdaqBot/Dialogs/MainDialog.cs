@@ -6,9 +6,10 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
-using Microsoft.Recognizers.Text.DataTypes.TimexExpression;
 using NasdaqBot.Models;
 using NasdaqBot.Recognizers;
+using Newtonsoft.Json.Linq;
+using NasdaqBot.Extensions;
 
 namespace NasdaqBot.Dialogs
 {
@@ -71,13 +72,24 @@ namespace NasdaqBot.Dialogs
 
             // var luisResult = await _luisRecognizer.RecognizeAsync<FlightBooking>(stepContext.Context, cancellationToken);
             var luisResult = await _luisRecognizer.RecognizeAsync(stepContext.Context, cancellationToken);
-            var topIntent = luisResult.Intents.OrderByDescending(i => i.Value.Score).First().Key;
-            switch (topIntent)
+            var topIntent = luisResult.Intents.OrderByDescending(i => i.Value.Score).FirstOrDefault().Key;
+            
+            switch (topIntent.ToLower())
             {
-                case "buystockintent":
-                    var buyStockRequest = new BuyStockRequest();
-                    // Run the BookingDialog giving it whatever details we have from the LUIS call, it will fill out the remainder.
-                    return await stepContext.BeginDialogAsync(nameof(BuyStockDialog), buyStockRequest, cancellationToken);
+                case "stock_buy":
+                    try
+                    {
+                        var buyStockRequest = new BuyStockRequest();
+                        buyStockRequest.StockSymbol = luisResult.ReadEntity<string>("StockSymbol");
+                        // Run the BuyStockDialog giving it whatever details we have from the LUIS call, it will fill out the remainder.
+                        return await stepContext.BeginDialogAsync(nameof(BuyStockDialog), buyStockRequest, cancellationToken);
+
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        throw;
+                    }
 
                 default:
                     // Catch all for unhandled intents

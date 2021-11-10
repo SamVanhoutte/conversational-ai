@@ -10,9 +10,6 @@ namespace NasdaqBot.Dialogs
 {
     public class BuyStockDialog : CancelAndHelpDialog
     {
-        private const string StockSelectionMsgText = "Which stock do you want to buy?";
-        private const string StockAmountMsgText = "How much should I buy?";
-        private const string StockLimitMsgText = "At what limit should I put the order?";
 
         public BuyStockDialog() : base(nameof(BuyStockDialog))
         {
@@ -37,6 +34,8 @@ namespace NasdaqBot.Dialogs
         private async Task<DialogTurnResult> StockSelectionStepAsync(WaterfallStepContext stepContext,
             CancellationToken cancellationToken)
         {
+            string StockSelectionMsgText = "Which stock do you want to buy?";
+
             var stockRequest = (BuyStockRequest)stepContext.Options;
 
             if (stockRequest.StockSymbol == null)
@@ -56,6 +55,7 @@ namespace NasdaqBot.Dialogs
             var stockRequest = (BuyStockRequest)stepContext.Options;
 
             stockRequest.StockSymbol = (string)stepContext.Result;
+            string StockAmountMsgText = $"How much of {stockRequest.StockSymbol} should I buy?";
 
             if (stockRequest.Amount == 0)
             {
@@ -74,6 +74,7 @@ namespace NasdaqBot.Dialogs
             var stockRequest = (BuyStockRequest)stepContext.Options;
 
             stockRequest.Amount = Convert.ToInt32(stepContext.Result);
+            string StockLimitMsgText = $"At what limit should I put the {stockRequest.Amount}x{stockRequest.StockSymbol} order?";
 
             if (stockRequest.OrderLimit == 0)
             {
