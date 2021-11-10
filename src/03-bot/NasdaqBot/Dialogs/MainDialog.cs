@@ -17,9 +17,11 @@ namespace NasdaqBot.Dialogs
     {
         private readonly StockStatusRecognizer _luisRecognizer;
         protected readonly ILogger<MainDialog> Logger;
+        private readonly IMarketService _marketService;
 
-        public MainDialog(StockStatusRecognizer luisRecognizer, BuyStockDialog buyStockDialog, ILogger<MainDialog> logger) : base(nameof(MainDialog))
+        public MainDialog(StockStatusRecognizer luisRecognizer, BuyStockDialog buyStockDialog, IMarketService marketService, ILogger<MainDialog> logger) : base(nameof(MainDialog))
         {
+            _marketService = marketService;
             _luisRecognizer = luisRecognizer;
             Logger = logger;
 
@@ -83,7 +85,6 @@ namespace NasdaqBot.Dialogs
                         buyStockRequest.StockSymbol = luisResult.ReadEntity<string>("StockSymbol");
                         // Run the BuyStockDialog giving it whatever details we have from the LUIS call, it will fill out the remainder.
                         return await stepContext.BeginDialogAsync(nameof(BuyStockDialog), buyStockRequest, cancellationToken);
-
                     }
                     catch (Exception e)
                     {
@@ -106,13 +107,14 @@ namespace NasdaqBot.Dialogs
         {
             // If the child dialog ("BuyStockDialog") was cancelled, the user failed to confirm or if the intent wasn't BuyStock
             // the Result here will be null.
-            if (stepContext.Result is BuyStockRequest result)
+            if (stepContext.Result is BuyStockRequest stockRequest)
             {
                 // Now we have all the booking details call the booking service.
+                var orderResult = await _marketService.PlaceOrderAsync(stockRequest);
 
                 // If the call to the booking service was successful tell the user.
 
-                var messageText = $"I have created a Buy limit order for {result.Amount} {result.StockSymbol} at {result.OrderLimit}";
+                var messageText = $"Order {orderResult.OrderNumber} has been created for {stockRequest.Amount} {stockRequest.StockSymbol} at {stockRequest.OrderLimit} with the following costs {orderResult.Costs:0.00}$";
                 var message = MessageFactory.Text(messageText, messageText, InputHints.IgnoringInput);
                 await stepContext.Context.SendActivityAsync(message, cancellationToken);
             }

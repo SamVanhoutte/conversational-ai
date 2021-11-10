@@ -10,6 +10,7 @@ namespace NasdaqBot.Dialogs
 {
     public class BuyStockDialog : CancelAndHelpDialog
     {
+        private readonly IMarketService _marketService;
 
         public BuyStockDialog() : base(nameof(BuyStockDialog))
         {
@@ -114,7 +115,6 @@ namespace NasdaqBot.Dialogs
             if ((bool)stepContext.Result)
             {
                 var stockRequest = (BuyStockRequest)stepContext.Options;
-
                 return await stepContext.EndDialogAsync(stockRequest, cancellationToken);
             }
 
