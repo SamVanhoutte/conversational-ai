@@ -1,5 +1,7 @@
 using System;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
@@ -10,6 +12,7 @@ using NasdaqBot.Models;
 using NasdaqBot.Recognizers;
 using Newtonsoft.Json.Linq;
 using NasdaqBot.Extensions;
+using Newtonsoft.Json;
 
 namespace NasdaqBot.Dialogs
 {
@@ -19,7 +22,8 @@ namespace NasdaqBot.Dialogs
         protected readonly ILogger<MainDialog> Logger;
         private readonly IMarketService _marketService;
 
-        public MainDialog(StockStatusRecognizer luisRecognizer, BuyStockDialog buyStockDialog, IMarketService marketService, ILogger<MainDialog> logger) : base(nameof(MainDialog))
+        public MainDialog(StockStatusRecognizer luisRecognizer, BuyStockDialog buyStockDialog,
+            IMarketService marketService, ILogger<MainDialog> logger) : base(nameof(MainDialog))
         {
             _marketService = marketService;
             _luisRecognizer = luisRecognizer;
@@ -75,7 +79,7 @@ namespace NasdaqBot.Dialogs
             // var luisResult = await _luisRecognizer.RecognizeAsync<FlightBooking>(stepContext.Context, cancellationToken);
             var luisResult = await _luisRecognizer.RecognizeAsync(stepContext.Context, cancellationToken);
             var topIntent = luisResult.Intents.OrderByDescending(i => i.Value.Score).FirstOrDefault().Key;
-            
+
             switch (topIntent.ToLower())
             {
                 case "stock_buy":
@@ -84,7 +88,8 @@ namespace NasdaqBot.Dialogs
                         var buyStockRequest = new BuyStockRequest();
                         buyStockRequest.StockSymbol = luisResult.ReadEntity<string>("StockSymbol");
                         // Run the BuyStockDialog giving it whatever details we have from the LUIS call, it will fill out the remainder.
-                        return await stepContext.BeginDialogAsync(nameof(BuyStockDialog), buyStockRequest, cancellationToken);
+                        return await stepContext.BeginDialogAsync(nameof(BuyStockDialog), buyStockRequest,
+                            cancellationToken);
                     }
                     catch (Exception e)
                     {
@@ -92,18 +97,37 @@ namespace NasdaqBot.Dialogs
                         throw;
                     }
 
+                    break;
+                case "stock_query":
+                    try
+                    {
+                        var stockSymbol = luisResult.ReadEntity<string>("StockSymbol");
+                        var result = await _marketService.GetStockResultAsync(stockSymbol);
+                        var message = MessageFactory.Attachment(CreateStockStatusMessage(result));
+                        await stepContext.Context.SendActivityAsync(message, cancellationToken);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        throw;
+                    }
+
+                    break;
                 default:
                     // Catch all for unhandled intents
-                    var didntUnderstandMessageText = $"Sorry, I didn't get that. Please try asking in a different way (intent was {topIntent})";
-                    var didntUnderstandMessage = MessageFactory.Text(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
+                    var didntUnderstandMessageText =
+                        $"Sorry, I didn't get that. Please try asking in a different way (intent was {topIntent})";
+                    var didntUnderstandMessage = MessageFactory.Text(didntUnderstandMessageText,
+                        didntUnderstandMessageText, InputHints.IgnoringInput);
                     await stepContext.Context.SendActivityAsync(didntUnderstandMessage, cancellationToken);
                     break;
             }
 
             return await stepContext.NextAsync(null, cancellationToken);
         }
-        
-        private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+
+        private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext,
+            CancellationToken cancellationToken)
         {
             // If the child dialog ("BuyStockDialog") was cancelled, the user failed to confirm or if the intent wasn't BuyStock
             // the Result here will be null.
@@ -114,14 +138,67 @@ namespace NasdaqBot.Dialogs
 
                 // If the call to the booking service was successful tell the user.
 
-                var messageText = $"Order {orderResult.OrderNumber} has been created for {stockRequest.Amount} {stockRequest.StockSymbol} at {stockRequest.OrderLimit} with the following costs {orderResult.Costs:0.00}$";
-                var message = MessageFactory.Text(messageText, messageText, InputHints.IgnoringInput);
+                var messageText =
+                    $"Order {orderResult.OrderNumber} has been created for {stockRequest.Amount} {stockRequest.StockSymbol} at {stockRequest.OrderLimit} with the following costs {orderResult.Costs:0.00}$";
+                // var message = MessageFactory.Text(messageText, messageText, InputHints.IgnoringInput);
+                var message = MessageFactory.Attachment(CreateOrderConfirmation(orderResult));
                 await stepContext.Context.SendActivityAsync(message, cancellationToken);
             }
 
             // Restart the main dialog with a different message the second time around
             var promptMessage = "What else can I do for you?";
             return await stepContext.ReplaceDialogAsync(InitialDialogId, promptMessage, cancellationToken);
+        }
+
+        public static Attachment CreateOrderConfirmation(StockOrder order)
+        {
+            try
+            {
+                // combine path for cross platform support
+                var paths = new[] { ".", "Cards", "orderresult.json" };
+                var adaptiveCardJson = File.ReadAllText(Path.Combine(paths));
+                adaptiveCardJson = adaptiveCardJson.Replace("#StockSymbol", order.StockSymbol);
+                adaptiveCardJson = adaptiveCardJson.Replace("#OrderId", order.OrderNumber);
+                adaptiveCardJson = adaptiveCardJson.Replace("#Amount", order.Amount.ToString());
+                adaptiveCardJson = adaptiveCardJson.Replace("#Limit", order.Limit.ToString("C"));
+                adaptiveCardJson = adaptiveCardJson.Replace("#Costs", order.Costs.ToString("C"));
+                var adaptiveCardAttachment = new Attachment()
+                {
+                    ContentType = "application/vnd.microsoft.card.adaptive",
+                    Content = JsonConvert.DeserializeObject(adaptiveCardJson),
+                };
+
+                return adaptiveCardAttachment;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+        
+        public static Attachment CreateStockStatusMessage(StockResult result)
+        {
+            try
+            {
+                // combine path for cross platform support
+                var paths = new[] { ".", "Cards", "stockresult.json" };
+                var adaptiveCardJson = File.ReadAllText(Path.Combine(paths));
+                adaptiveCardJson = adaptiveCardJson.Replace("#StockSymbol", result.StockSymbol);
+                adaptiveCardJson = adaptiveCardJson.Replace("#Result", result.Result.ToString("P"));
+                var adaptiveCardAttachment = new Attachment()
+                {
+                    ContentType = "application/vnd.microsoft.card.adaptive",
+                    Content = JsonConvert.DeserializeObject(adaptiveCardJson),
+                };
+
+                return adaptiveCardAttachment;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }

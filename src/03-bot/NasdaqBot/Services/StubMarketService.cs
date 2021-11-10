@@ -38,6 +38,7 @@ namespace NasdaqBot.Services
             return Task.FromResult<StockOrder>(new StockOrder
             {
                 Costs = rnd.NextDouble() * 40, OrderNumber = $"Order{rnd.Next(100, 999)}", OrderType = "Buy",
+                Amount = request.Amount, Limit = request.OrderLimit, 
                 StockSymbol = request.StockSymbol
             });
         }
