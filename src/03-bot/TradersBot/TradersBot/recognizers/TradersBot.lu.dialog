@@ -1,0 +1,8 @@
+{
+  "$kind": "Microsoft.MultiLanguageRecognizer",
+  "id": "LUIS_TradersBot",
+  "recognizers": {
+    "en-us": "TradersBot.en-us.lu",
+    "": "TradersBot.en-us.lu"
+  }
+}

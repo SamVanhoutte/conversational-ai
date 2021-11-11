@@ -1,0 +1,8 @@
+{
+  "TradersBot.en-us": {
+    "rootDialog": true,
+    "triggers": {
+      "stockstatusintent": ""
+    }
+  }
+}

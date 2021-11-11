@@ -1,0 +1,26 @@
+[import](common.lg)
+
+# SendActivity_Greeting()
+[Activity
+    Text = ${SendActivity_Greeting_text()}
+]
+
+# SendActivity_Greeting_text()
+- Welcome to your Trading assistent
+- Hey, what's up?  How can I help you doing trades today?
+# SendActivity_DidNotUnderstand()
+[Activity
+    Text = ${SendActivity_DidNotUnderstand_text()}
+]
+
+# SendActivity_DidNotUnderstand_text()
+- Your trader does not understand.  Please try something else
+- What?  Please say something meaningful.
+- Euh, did not get that message.  Sorry.  Try again
+# SendActivity_KVqaiR()
+[Activity
+    Text = ${SendActivity_KVqaiR_text()}
+]
+
+# SendActivity_KVqaiR_text()
+- ${@StockSymbol}
