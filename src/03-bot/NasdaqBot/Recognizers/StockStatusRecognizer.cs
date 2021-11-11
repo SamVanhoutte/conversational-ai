@@ -3,7 +3,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.AI.Luis;
+using Microsoft.Bot.Builder.AI.LuisV3;
 using Microsoft.Extensions.Configuration;
+using LuisApplication = Microsoft.Bot.Builder.AI.Luis.LuisApplication;
+using LuisRecognizer = Microsoft.Bot.Builder.AI.Luis.LuisRecognizer;
 
 namespace NasdaqBot.Recognizers
 {
@@ -13,12 +16,19 @@ namespace NasdaqBot.Recognizers
 
         public StockStatusRecognizer(IConfiguration configuration)
         {
-            var luisEnabled = !string.IsNullOrEmpty(configuration["LuisAppId"]) && !string.IsNullOrEmpty(configuration["LuisAPIKey"]) && !string.IsNullOrEmpty(configuration["LuisAPIHostName"]);
+            var luisEnabled = !string.IsNullOrEmpty(configuration["LuisAppId"]) &&
+                              !string.IsNullOrEmpty(configuration["LuisAPIKey"]) &&
+                              !string.IsNullOrEmpty(configuration["LuisAPIHostName"]);
             if (luisEnabled)
             {
                 var luisApplication = new LuisApplication(configuration["LuisAppId"], configuration["LuisAPIKey"],
                     $"https://{configuration["LuisAPIHostName"]}");
-                _recognizer = new LuisRecognizer(new LuisRecognizerOptionsV3(luisApplication));
+                var luisOptions = new LuisRecognizerOptionsV3(luisApplication)
+                {
+                    IncludeAPIResults = true
+                };
+                luisOptions.PredictionOptions.IncludeAllIntents = true;
+                _recognizer = new LuisRecognizer(luisOptions);
             }
         }
 
@@ -30,14 +40,12 @@ namespace NasdaqBot.Recognizers
             try
             {
                 return await _recognizer.RecognizeAsync(turnContext, cancellationToken);
-
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
             }
-            
         }
 
 
@@ -47,14 +55,12 @@ namespace NasdaqBot.Recognizers
             try
             {
                 return await _recognizer.RecognizeAsync<T>(turnContext, cancellationToken);
-
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
             }
-            
         }
     }
 }

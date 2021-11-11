@@ -10,20 +10,35 @@ namespace NasdaqBot.Extensions
 {
     public static class EntitiesExtensions
     {
-        public static T ReadEntity<T>(this RecognizerResult result, string entityName,
-            T defaultValue = default) where T: class
+        public static T ReadEntity<T>(this RecognizerResult result, string entityName, bool arrayEntity = false,
+            T defaultValue = default)
         {
             try
             {
                 var entities = result.Entities.ToObject<Dictionary<string, object>>();
-                if (!entities?.ContainsKey(entityName)??false) return defaultValue;
+                if (!entities?.ContainsKey(entityName) ?? false) return defaultValue;
 
                 var token = entities[entityName] as JArray;
-                var vals = token.ToObject<List<List<string>>>();
-                var value= vals.FirstOrDefault()?.FirstOrDefault();
-                if (value == null) return defaultValue;
-                return value as T;
+                if (arrayEntity)
+                {
+                    var vals = token.ToObject<List<List<T>>>();
+                    if (vals != null)
+                    {
+                        var value = vals.FirstOrDefault().FirstOrDefault();
+                        return value ?? defaultValue;
+                    }
+                }
+                else
+                {
+                    var vals = token.ToObject<List<T>>();
+                    if (vals != null)
+                    {
+                        var value = vals.FirstOrDefault();
+                        return value ?? defaultValue;
+                    }
+                }
 
+                return defaultValue;
             }
             catch (Exception e)
             {

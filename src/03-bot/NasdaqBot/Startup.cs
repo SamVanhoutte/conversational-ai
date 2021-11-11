@@ -12,6 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NasdaqBot.Bots;
 using NasdaqBot.Dialogs;
+using NasdaqBot.Languages;
+using NasdaqBot.Middleware;
 using NasdaqBot.Recognizers;
 using NasdaqBot.Services;
 
@@ -33,6 +35,11 @@ namespace NasdaqBot
 
             // Create the User state. (Used in this bot's Dialog implementation.)
             services.AddSingleton<UserState>();
+            // Create the Microsoft Translator responsible for making calls to the Cognitive Services translation service
+            services.AddSingleton<CognitiveTranslater>();
+
+            // Create the Translation Middleware that will be added to the middleware pipeline in the AdapterWithErrorHandler
+            services.AddSingleton<MultiLingualMiddleware>();
             
             // Create the storage we'll be using for User and Conversation state. (Memory is great for testing purposes.)
             services.AddSingleton<IStorage, MemoryStorage>();
