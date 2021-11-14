@@ -6,7 +6,7 @@ namespace NasdaqBot.Models
         public string StockSymbol { get; set; }
         public string OrderType { get; set; }
         public int Amount { get; set; }
-        public double Limit { get; set; }
-        public double Costs { get; set; }
+        public decimal Limit { get; set; }
+        public decimal Costs { get; set; }
     }
 }

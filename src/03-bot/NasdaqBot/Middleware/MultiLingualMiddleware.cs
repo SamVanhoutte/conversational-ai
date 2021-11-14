@@ -13,15 +13,18 @@ namespace NasdaqBot.Middleware
     {
         private readonly CognitiveTranslater _translator;
         private readonly IStatePropertyAccessor<string> _languageStateProperty;
+        private readonly CognitiveLanguageDetector _languageDetector;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MultiLingualMiddleware"/> class.
         /// </summary>
         /// <param name="translator">Translator implementation to be used for text translation.</param>
         /// <param name="languageStateProperty">State property for current language.</param>
-        public MultiLingualMiddleware(CognitiveTranslater translator, UserState userState)
+        public MultiLingualMiddleware(CognitiveTranslater translator, CognitiveLanguageDetector languageDetector,
+            UserState userState)
         {
             _translator = translator ?? throw new ArgumentNullException(nameof(translator));
+            _languageDetector = languageDetector ?? throw new ArgumentNullException(nameof(languageDetector));
             if (userState == null)
             {
                 throw new ArgumentNullException(nameof(userState));
@@ -40,29 +43,25 @@ namespace NasdaqBot.Middleware
 
             var translate = await ShouldTranslateAsync(turnContext, cancellationToken);
 
-            if (translate.Item1)
+            if (translate.ShouldTranslate)
             {
                 if (turnContext.Activity.Type == ActivityTypes.Message)
                 {
-                        turnContext.Activity.Text = await _translator.TranslateAsync(turnContext.Activity.Text,
+                    turnContext.Activity.Text = await _translator.TranslateAsync(turnContext.Activity.Text,
                         TranslationSettings.DefaultLanguage, cancellationToken);
                 }
             }
 
             turnContext.OnSendActivities(async (newContext, activities, nextSend) =>
             {
-                // string userLanguage =
-                //     await _languageStateProperty.GetAsync(turnContext, () => TranslationSettings.DefaultLanguage) ??
-                //     TranslationSettings.DefaultLanguage;
-                // bool shouldTranslate = userLanguage != TranslationSettings.DefaultLanguage;
-
                 // Translate messages sent to the user to user language
-                if (translate.Item1)
+                if (translate.ShouldTranslate)
                 {
                     List<Task> tasks = new List<Task>();
                     foreach (Activity currentActivity in activities.Where(a => a.Type == ActivityTypes.Message))
                     {
-                        tasks.Add(TranslateMessageActivityAsync(currentActivity.AsMessageActivity(), translate.Item2));
+                        tasks.Add(TranslateMessageActivityAsync(currentActivity.AsMessageActivity(),
+                            translate.UserLanguage));
                     }
 
                     if (tasks.Any())
@@ -76,17 +75,12 @@ namespace NasdaqBot.Middleware
 
             turnContext.OnUpdateActivity(async (newContext, activity, nextUpdate) =>
             {
-                // string userLanguage =
-                //     await _languageStateProperty.GetAsync(turnContext, () => TranslationSettings.DefaultLanguage) ??
-                //     TranslationSettings.DefaultLanguage;
-                // bool shouldTranslate = userLanguage != TranslationSettings.DefaultLanguage;
-
                 // Translate messages sent to the user to user language
                 if (activity.Type == ActivityTypes.Message)
                 {
-                    if (translate.Item1)
+                    if (translate.ShouldTranslate)
                     {
-                        await TranslateMessageActivityAsync(activity.AsMessageActivity(), translate.Item2);
+                        await TranslateMessageActivityAsync(activity.AsMessageActivity(), translate.UserLanguage);
                     }
                 }
 
@@ -105,19 +99,33 @@ namespace NasdaqBot.Middleware
             }
         }
 
-        private async Task<Tuple<bool, string>> ShouldTranslateAsync(ITurnContext turnContext,
+        private async Task<TranslationInstruction> ShouldTranslateAsync(ITurnContext turnContext,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             string userLanguage =
                 await _languageStateProperty.GetAsync(turnContext, () => null,
                     cancellationToken);
 
-            if (userLanguage == null)
+            if (!string.IsNullOrEmpty(turnContext.Activity.Locale))
             {
-                userLanguage = "nl"; // Detect language here
+                userLanguage = turnContext.Activity.Locale;
             }
 
-            return new Tuple<bool, string>(userLanguage != TranslationSettings.DefaultLanguage, userLanguage);
+            if (userLanguage == null)
+            {
+                if (!string.IsNullOrEmpty(turnContext?.Activity?.Text) &&
+                    (_languageDetector?.IsConfigured ?? false))
+                {
+                    userLanguage = await _languageDetector.DetectLanguageAsync(turnContext.Activity.Text);
+                    await _languageStateProperty.SetAsync(turnContext, userLanguage, cancellationToken);
+                }
+                else
+                {
+                    userLanguage = "en"; // Default language
+                }
+            }
+
+            return new TranslationInstruction(userLanguage != TranslationSettings.DefaultLanguage, userLanguage);
         }
     }
 }
