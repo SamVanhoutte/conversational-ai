@@ -13,7 +13,7 @@ namespace NasdaqBot.Languages
         public CognitiveLanguageDetector(IConfiguration configuration)
         {
             string key = configuration["LanguageDetectionKey"];
-            string endpoint = configuration["LanguageDetectionEdpoint"];
+            string endpoint = configuration["LanguageDetectionEndpoint"];
             if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(endpoint))
             {
                 _languageDetectionClient = new TextAnalyticsClient(new Uri(endpoint), new AzureKeyCredential(key));

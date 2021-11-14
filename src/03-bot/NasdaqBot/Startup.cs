@@ -3,6 +3,7 @@
 //
 // Generated with EmptyBot .NET Template version v4.14.1.2
 
+using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder;
@@ -23,7 +24,12 @@ namespace NasdaqBot
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            var cfgBuilder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile($"appsettings.json", true, true)
+                .AddJsonFile($"appsettings.dev.json", true, true)
+                .AddEnvironmentVariables();
+            Configuration = cfgBuilder.Build();
         }
 
         public IConfiguration Configuration { get; }
