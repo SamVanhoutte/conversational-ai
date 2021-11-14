@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.VisualBasic;
 using NasdaqBot.Models;
 
 namespace NasdaqBot.Services
@@ -9,9 +10,12 @@ namespace NasdaqBot.Services
     {
         public Task<StockResult> GetStockResultAsync(string stockSymbol)
         {
+            var rnd = new Random();
+            var result = rnd.NextDouble()*5;
+            if (rnd.Next(0, 2) == 0) result = -result;
             return Task.FromResult(new StockResult
             {
-                Result = -0.32,
+                Result = result,
                 StockSymbol = stockSymbol,
                 ChartData = GenerateChartAsync()
             });

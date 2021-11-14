@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
@@ -22,6 +23,22 @@ namespace NasdaqBot.Dialogs
         protected readonly ILogger<MainDialog> Logger;
         private readonly IMarketService _marketService;
 
+        public static List<string> WelcomeMessages => new List<string>
+        {
+            "Hi, %User.Welcome to your Trading assistant",
+            "Hey %User, what's up?  How can I help you doing trades today?",
+            "Hello %User. An example: Buy 100 MSFT at 345.3",
+            "%User, this is an example you can ask: How is Facebook doing today?",
+            "Welcome, %User. How can I help getting you rich, today. #HODL",
+            "How can I help you get rich today?\nSay something like \"Buy 100 MSFT at 300\""
+        };
+
+        public static string GetWelcomeMessage(string user="")
+        {
+            var rand = new Random();
+            return WelcomeMessages[rand.Next(WelcomeMessages.Count)].Replace("%User", user);
+        }
+        
         public MainDialog(StockStatusRecognizer luisRecognizer, BuyStockDialog buyStockDialog,
             IMarketService marketService, ILogger<MainDialog> logger) : base(nameof(MainDialog))
         {
@@ -56,12 +73,19 @@ namespace NasdaqBot.Dialogs
                 return await stepContext.NextAsync(null, cancellationToken);
             }
 
-            // Use the text provided in FinalStepAsync or the default if it is the first time.
-            var messageText = stepContext.Options?.ToString() ??
-                              "How can I help you get rich today?\nSay something like \"Buy 100 MSFT at 300\"";
-            var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
-            return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage },
-                cancellationToken);
+            if (stepContext.Options != null)
+            {
+                // If Options is not null, it's a replay of the dialog and we show the startup question
+                // Use the text provided in FinalStepAsync or the default if it is the first time.
+                
+                var messageText = stepContext.Options?.ToString() ??
+                                  GetWelcomeMessage(stepContext.Context.Activity.From.Name);
+                var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
+                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage },
+                    cancellationToken);
+            }
+
+            return await stepContext.NextAsync(null, cancellationToken);
         }
 
         private async Task<DialogTurnResult> SpecifyRequestStepAsync(WaterfallStepContext stepContext,
@@ -78,9 +102,11 @@ namespace NasdaqBot.Dialogs
 
             // var luisResult = await _luisRecognizer.RecognizeAsync<FlightBooking>(stepContext.Context, cancellationToken);
             var luisResult = await _luisRecognizer.RecognizeAsync(stepContext.Context, cancellationToken);
-            var topIntent = luisResult.Intents.OrderByDescending(i => i.Value.Score).FirstOrDefault().Key;
+            var topIntent = luisResult.Intents
+                .Where(i => i.Value.Score > 0.05)
+                .OrderByDescending(i => i.Value.Score).FirstOrDefault().Key;
 
-            switch (topIntent.ToLower())
+            switch (topIntent?.ToLower())
             {
                 case "stock_buy":
                     try
@@ -103,7 +129,7 @@ namespace NasdaqBot.Dialogs
                 case "stock_query":
                     try
                     {
-                        var stockSymbol = luisResult.ReadEntity<string>("StockSymbol");
+                        var stockSymbol = luisResult.ReadEntity<string>("StockSymbol", true);
                         var result = await _marketService.GetStockResultAsync(stockSymbol);
                         var message = MessageFactory.Attachment(CreateStockStatusMessage(result));
                         await stepContext.Context.SendActivityAsync(message, cancellationToken);
@@ -148,7 +174,8 @@ namespace NasdaqBot.Dialogs
             }
 
             // Restart the main dialog with a different message the second time around
-            var promptMessage = "What else can I do for you?";
+            var promptMessage = $"What else can I do for you?";
+            stepContext.ActiveDialog.State.Add("Restart", true);
             return await stepContext.ReplaceDialogAsync(InitialDialogId, promptMessage, cancellationToken);
         }
 
@@ -162,8 +189,8 @@ namespace NasdaqBot.Dialogs
                 adaptiveCardJson = adaptiveCardJson.Replace("#StockSymbol", order.StockSymbol);
                 adaptiveCardJson = adaptiveCardJson.Replace("#OrderId", order.OrderNumber);
                 adaptiveCardJson = adaptiveCardJson.Replace("#Amount", order.Amount.ToString());
-                adaptiveCardJson = adaptiveCardJson.Replace("#Limit", order.Limit.ToString("C"));
-                adaptiveCardJson = adaptiveCardJson.Replace("#Costs", order.Costs.ToString("C"));
+                adaptiveCardJson = adaptiveCardJson.Replace("#Limit", $"{order.Limit:#,###.00} $");
+                adaptiveCardJson = adaptiveCardJson.Replace("#Costs", $"{order.Limit:#,###.00} $");
                 var adaptiveCardAttachment = new Attachment()
                 {
                     ContentType = "application/vnd.microsoft.card.adaptive",
@@ -178,7 +205,7 @@ namespace NasdaqBot.Dialogs
                 throw;
             }
         }
-        
+
         public static Attachment CreateStockStatusMessage(StockResult result)
         {
             try
@@ -187,7 +214,9 @@ namespace NasdaqBot.Dialogs
                 var paths = new[] { ".", "Cards", "stockresult.json" };
                 var adaptiveCardJson = File.ReadAllText(Path.Combine(paths));
                 adaptiveCardJson = adaptiveCardJson.Replace("#StockSymbol", result.StockSymbol);
-                adaptiveCardJson = adaptiveCardJson.Replace("#Result", result.Result.ToString("P"));
+                adaptiveCardJson = adaptiveCardJson.Replace("#Result", result.Result.ToString("0.00") + " %");
+                adaptiveCardJson = adaptiveCardJson.Replace("#Message",
+                    $"{result.StockSymbol} is {(result.Result > 0 ? "up" : "down")} with {Math.Abs(result.Result):0.00}%");
                 var adaptiveCardAttachment = new Attachment()
                 {
                     ContentType = "application/vnd.microsoft.card.adaptive",

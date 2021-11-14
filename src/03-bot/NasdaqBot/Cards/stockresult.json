@@ -24,6 +24,14 @@
       "text": "#StockSymbol",
       "wrap": true,
       "maxLines": 0
+    },
+    {
+      "type": "TextBlock",
+      "size": "default",
+      "isSubtle": true,
+      "text": "#Message",
+      "wrap": true,
+      "maxLines": 0
     }
   ],
   "actions0": [
