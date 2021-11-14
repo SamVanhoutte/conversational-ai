@@ -88,7 +88,7 @@ namespace NasdaqBot.Dialogs
                         var buyStockRequest = new BuyStockRequest();
                         buyStockRequest.StockSymbol = luisResult.ReadEntity<string>("StockSymbol", true);
                         buyStockRequest.Amount = luisResult.ReadEntity<int>("Amount");
-                        buyStockRequest.OrderLimit = luisResult.ReadEntity<double>("Limit");
+                        buyStockRequest.OrderLimit = luisResult.ReadEntity<decimal>("Limit");
                         // Run the BuyStockDialog giving it whatever details we have from the LUIS call, it will fill out the remainder.
                         return await stepContext.BeginDialogAsync(nameof(BuyStockDialog), buyStockRequest,
                             cancellationToken);

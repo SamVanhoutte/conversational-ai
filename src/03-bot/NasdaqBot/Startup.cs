@@ -37,6 +37,7 @@ namespace NasdaqBot
             services.AddSingleton<UserState>();
             // Create the Microsoft Translator responsible for making calls to the Cognitive Services translation service
             services.AddSingleton<CognitiveTranslater>();
+            services.AddSingleton<CognitiveLanguageDetector>();
 
             // Create the Translation Middleware that will be added to the middleware pipeline in the AdapterWithErrorHandler
             services.AddSingleton<MultiLingualMiddleware>();

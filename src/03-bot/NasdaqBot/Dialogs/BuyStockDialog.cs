@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
@@ -94,7 +95,8 @@ namespace NasdaqBot.Dialogs
             try
             {
                 var stockRequest = (BuyStockRequest)stepContext.Options;
-                stockRequest.OrderLimit = double.Parse(stepContext.Result.ToString());
+                var numericValue = stepContext.Result.ToString().Replace(",",".");
+                stockRequest.OrderLimit = decimal.Parse(numericValue, CultureInfo.InvariantCulture);
 
                 var messageText =
                     $"Please confirm, I will buy {stockRequest.Amount} {stockRequest.StockSymbol} at limit of {stockRequest.OrderLimit}. Is this correct?";
