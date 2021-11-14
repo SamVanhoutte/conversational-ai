@@ -60,8 +60,7 @@ jobs:
           # Name of an existing slot other than the production slot. Default value is production
           slot-name: production
           # Application settings using the JSON syntax set as value of secret variable: APP_SETTINGS
-          app-settings-json: '[
-                                {
+          app-settings-json: '[{
                                   "name": "LuisAppId",
                                   "value": "${{ secrets.LuisAppId }}",
                                   "slotSetting": false
@@ -90,5 +89,4 @@ jobs:
                                   "name": "LanguageDetectionEndpoint",
                                   "value": "${{ secrets.LanguageDetectionEndpoint }}",
                                   "slotSetting": false
-                                }
-                              ]'
+                                }]'
