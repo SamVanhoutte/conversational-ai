@@ -19,7 +19,6 @@ namespace NasdaqBot.Dialogs
             AddDialog(new NumberPrompt<int>(nameof(NumberPrompt<int>)));
             AddDialog(new NumberPrompt<double>(nameof(NumberPrompt<double>), LimitValidatorAsync));
             AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt)));
-            // AddDialog(new DateResolverDialog());
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
                 StockSelectionStepAsync,
@@ -99,7 +98,7 @@ namespace NasdaqBot.Dialogs
                 stockRequest.OrderLimit = decimal.Parse(numericValue, CultureInfo.InvariantCulture);
 
                 var messageText =
-                    $"Please confirm, I will buy {stockRequest.Amount} {stockRequest.StockSymbol} at limit of {stockRequest.OrderLimit}. Is this correct?";
+                    $"Please confirm, I will buy {stockRequest.Amount} {stockRequest.StockSymbol} at limit of {stockRequest.OrderLimit:#,###.00} $. Is this correct?";
                 var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
 
                 return await stepContext.PromptAsync(nameof(ConfirmPrompt),
