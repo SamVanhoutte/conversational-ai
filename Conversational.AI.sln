@@ -1,12 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuisListEntityGenerator", "LuisListEntityGenerator\LuisListEntityGenerator.csproj", "{761DD69D-6B7A-4DC6-95FC-85DA02EA5366}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuisListEntityGenerator", "src\LuisListEntityGenerator\LuisListEntityGenerator.csproj", "{761DD69D-6B7A-4DC6-95FC-85DA02EA5366}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradersBot", "03-bot\TradersBot\TradersBot\TradersBot.csproj", "{0439888E-4456-407A-8A3D-86F8366EEC77}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradersBot", "src\03-bot\TradersBot\TradersBot\TradersBot.csproj", "{0439888E-4456-407A-8A3D-86F8366EEC77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradersBot.CustomLogic", "03-bot\TradersBot\TradersBot.CustomLogic\TradersBot.CustomLogic.csproj", "{9CF8BF63-AD23-48A5-9F48-245D6E2AD0CE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradersBot.CustomLogic", "src\03-bot\TradersBot\TradersBot.CustomLogic\TradersBot.CustomLogic.csproj", "{9CF8BF63-AD23-48A5-9F48-245D6E2AD0CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NasdaqBot", "03-bot\NasdaqBot\NasdaqBot.csproj", "{62CD53E0-85C8-4C55-AD8B-4B0D3A3B56CA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NasdaqBot", "src\03-bot\NasdaqBot\NasdaqBot.csproj", "{62CD53E0-85C8-4C55-AD8B-4B0D3A3B56CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
