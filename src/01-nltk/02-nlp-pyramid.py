@@ -39,7 +39,7 @@ nltk.download('words')
  
 text = "John works at Intel."
 text = "I saw a man on a hill with a telescope"
-text = "I am selling flowers in malls"
+text = "I am selling flowers in the mall"
  
 tokens = word_tokenize(text)
 ps = PorterStemmer() 
