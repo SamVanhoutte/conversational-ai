@@ -1,0 +1,320 @@
+
+> LUIS application information
+> !# @app.name = WallstreetBot
+> !# @app.versionId = 0.1
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 7.0.0
+> !# @app.tokenizerVersion = 1.0.0
+
+
+> # Intent definitions
+
+# None
+- bye
+- ok
+- sd
+
+
+# Stock.Buy
+- aquire {@Amount=100} msft at {@Limit=200}
+- buy 100
+- buy {@Amount=100} amzn
+- buy {@Amount=100} amzn to {@Limit=300}
+- buy 100 amzn to 44
+- buy 100 msft at 2993.2
+- buy {@Amount=200} adobe at {@Limit=300}
+- buy {@Amount=200} adobe at {@Limit=33}
+- buy {@Amount=200} msft at {@Limit=200}
+- buy {@Amount=200} nvda at {@Limit=300}
+- buy 200 nvda at {@Limit=3043.3}
+- buy {@Amount=200} nvda now
+- buy {@Amount=30} aapl at {@Limit=100}
+- buy {@Amount=300} aapl to {@Limit=3}
+- buy 300 adobe at 33
+- buy {@Amount=300} nvda stocks tomorrow morning
+- buy {@Amount=33} msft at {@Limit=388}
+- buy {@Amount=333} facebook at {@Limit=34,34}
+- buy {@Amount=399} nvda to {@Limit=33.4}
+- buy {@Amount=4} google at {@Limit=388,3}
+- buy {@Amount=488} amzn at {@Limit=40}
+- buy amzn
+- buy limit of {@Amount=100} goog at {@Limit=299}
+- buy msft at {@Limit=100.3}
+- buy msft at 39
+- get {@Amount=100} microsoft stocks at {@Limit=300}
+- koop {@Amount=100} msft at {@Limit=300}
+- koop 300 aapl aan 348
+- please buy {@Amount=300} amzn at {@Limit=488}
+- please buy me {@Amount=100} amzn at 300
+- please buy me {@Amount=300} cisco shares at {@Limit=88}.8
+
+
+@ intent Stock.Buy usesFeatures StockSymbol,datetimeV2,number
+
+# Stock.Query
+- how are the microsoft results on nasdaq?
+- how are the numbers of nvidia
+- how is adobe feeling today?
+- how is adobe today ?
+- how is apple ?
+- how is facebook doing today ?
+- how is google doing today ?
+- how is my msft doing ?
+- how is nvidia doing ,
+- is cisco red today?
+- is facebook doing well ?
+- please tell me cisco is doing fine?
+- show my adobe report
+- what is the performance of google?
+
+
+@ intent Stock.Query usesFeature StockSymbol
+
+# Stock.Sell
+- get rid of my msft stocks
+- sell all google
+- sell my adobe at 400
+- sell my facebook stocks
+- sell my nvidia stocks at 300
+
+
+@ intent Stock.Sell usesFeatures StockSymbol,datetimeV2
+
+> # Entity definitions
+
+@ ml Amount usesFeature number
+
+@ ml Limit usesFeature number
+
+
+> # PREBUILT Entity definitions
+
+@ prebuilt datetimeV2
+
+@ prebuilt money
+
+@ prebuilt number
+
+
+> # Phrase list definitions
+
+
+> # List entities
+
+@ list StockSymbol = 
+	- AMD :
+		- Advanced Micro Devices 
+	- ADBE :
+		- Adobe 
+	- ALGN :
+		- Align Technology 
+	- AMZN :
+		- Amazon.com 
+		- Amazon
+		- Amzon
+	- AMGN :
+		- Amgen 
+	- AEP :
+		- American Electric Power Company 
+	- ADI :
+		- Analog Devices 
+	- ANSS :
+		- ANSYS 
+	- AAPL :
+		- Apple 
+	- AMAT :
+		- Applied Materials 
+	- ASML :
+		- ASML  
+	- TEAM :
+		- Atlassianoration PLC
+	- ADSK :
+		- Autodesk 
+	- ATVI :
+		- Activision Blizzard 
+	- ADP :
+		- Automatic Data Processing 
+	- AVGO :
+		- Broadcom 
+	- BIDU :
+		- Baidu 
+	- BIIB :
+		- Biogen 
+	- BMRN :
+		- Biomarin Pharmaceutical 
+	- BKNG :
+		- Booking  
+	- CDNS :
+		- Cadence Design Systems 
+	- CDW :
+	- CERN :
+		- Cerner
+	- CHKP :
+		- Check Point Software Technologies 
+	- CHTR :
+		- Charter Communications 
+	- CPRT :
+		- Copart 
+	- CRWD :
+		- CrowdStrike  
+	- CTAS :
+		- Cintas
+	- CSCO :
+		- Cisco Systems 
+		- Cisco
+	- CMCSA :
+		- Comcast
+	- COST :
+		- Costco Wholesale
+		- Costco
+	- CSX :
+	- CTSH :
+		- Cognizant Technology Solutions
+	- DOCU :
+		- DocuSign 
+	- DXCM :
+		- Dexcom 
+	- DLTR :
+		- Dollar Tree 
+	- EA :
+		- Electronic Arts
+	- EBAY :
+		- eBay 
+	- EXC :
+		- Exelon
+	- FAST :
+		- Fastenal Co
+	- FB :
+		- Meta Platforms 
+		- facebook
+	- FISV :
+		- Fiserv 
+	- FOX :
+		- Fox. 
+	- FOXA :
+		- Fox. 
+	- GILD :
+		- Gilead Sciences 
+	- GOOG :
+		- Alphabet Class C
+		- google
+	- GOOGL :
+		- Alphabet 
+	- HON :
+		- Honeywell International 
+	- ILMN :
+		- Illumina 
+	- INCY :
+		- yte
+	- INTC :
+		- Intel
+	- INTU :
+		- Intuit 
+	- ISRG :
+		- Intuitive Surgical 
+	- MRVL :
+		- Marvell Technology 
+	- IDXX :
+		- IDEXX Laboratories 
+	- JD :
+		- JD.Com 
+	- KDP :
+		- Keurig Dr Pepper 
+	- KLAC :
+		- KLA
+	- KHC :
+		- Kraft Heinz Co
+	- LRCX :
+		- Lam Research
+	- LULU :
+		- Lululemon Athletica 
+	- MELI :
+		- Mercadolibre 
+	- MAR :
+		- Marriott International 
+	- MTCH :
+		- Match Group 
+	- MCHP :
+		- Microchip Technology 
+	- MDLZ :
+		- Mondelez International 
+	- MRNA :
+		- Moderna 
+	- MNST :
+		- Monster Beverage
+	- MSFT :
+		- Microsoft
+	- MU :
+		- Micron Technology 
+	- NFLX :
+		- Netflix 
+	- NTES :
+		- NetEase 
+	- NVDA :
+		- IDIA
+		- nvidia
+	- NXPI :
+		- NXP Semiconductors 
+	- OKTA :
+		- Okta 
+	- ORLY :
+		- O�Reilly Automotive 
+	- PAYX :
+		- Paychex 
+	- PCAR :
+		- Paccar 
+	- PDD :
+		- Pinduoduo 
+	- PTON :
+		- Peloton Interactive 
+	- PYPL :
+		- PayPal  
+	- PEP :
+		- PepsiCo 
+	- QCOM :
+		- Qualcomm 
+	- REGN :
+		- Regeneron Pharmaceuticals 
+	- ROST :
+		- Ross Stores 
+	- SIRI :
+		- Sirius XM  
+	- SGEN :
+		- Seagen 
+	- SPLK :
+		- Splunk 
+	- SWKS :
+		- Skyworks Solutions 
+	- SBUX :
+		- Starbucks
+	- SNPS :
+		- Synopsys 
+	- TCOM :
+		- Trip.com Group 
+	- TSLA :
+		- Tesla 
+	- TXN :
+		- Texas Instruments 
+	- TMUS :
+		- T-Mobile US 
+	- VRSN :
+		- Verisign 
+	- VRSK :
+		- Verisk Analytics 
+	- VRTX :
+		- Vertex Pharmaceuticals 
+	- WBA :
+		- Walgreens Boots Alliance 
+	- WDAY :
+		- Workday 
+	- XEL :
+		- Xcel Energy 
+	- XLNX :
+		- Xilinx 
+	- ZM :
+		- Zoom Video Communications 
+
+
+> # RegEx entities
+
+

@@ -14,11 +14,11 @@ namespace NasdaqBot.Languages
         private const string Host = "https://api.cognitive.microsofttranslator.com";
         private const string Path = "/translate?api-version=3.0";
         private const string UriParams = "&to=";
-        private const string location = "westeurope";
+        private const string Location = "westeurope";
         private static HttpClient _client = new HttpClient();
 
         private readonly string _key;
-        private bool UseTranslatorService => _key != null;
+        private bool UseTranslatorService => !string.IsNullOrEmpty( _key);
 
         public CognitiveTranslater(IConfiguration configuration)
         {
@@ -42,7 +42,7 @@ namespace NasdaqBot.Languages
                     request.RequestUri = new Uri(uri);
                     request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
                     request.Headers.Add("Ocp-Apim-Subscription-Key", _key);
-                    request.Headers.Add("Ocp-Apim-Subscription-Region", location);
+                    request.Headers.Add("Ocp-Apim-Subscription-Region", Location);
                     
                     var response = await _client.SendAsync(request, cancellationToken);
 

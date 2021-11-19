@@ -1,0 +1,248 @@
+
+> LUIS application information
+> !# @app.name = TradersBot(composer)-TradersBot.en-us.lu
+> !# @app.desc = Model for TradersBot app, targetting composer
+> !# @app.versionId = 0.1
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 7.0.0
+> !# @app.tokenizerVersion = 1.0.0
+
+
+> # Intent definitions
+
+# None
+
+
+# stockstatusintent
+- how is facebook doing
+- how is nvda today?
+- is amzn green ?
+- show my numbers for apple
+- what is performance of nvidia
+
+
+@ intent stockstatusintent usesFeature StockSymbol
+
+> # Entity definitions
+
+
+> # PREBUILT Entity definitions
+
+
+> # Phrase list definitions
+
+
+> # List entities
+
+@ list StockSymbol = 
+	- AMD :
+		- Advanced Micro Devices 
+	- ADBE :
+		- Adobe 
+	- ALGN :
+		- Align Technology 
+	- AMZN :
+		- Amazon.com 
+	- AMGN :
+		- Amgen 
+	- AEP :
+		- American Electric Power Company 
+	- ADI :
+		- Analog Devices 
+	- ANSS :
+		- ANSYS 
+	- AAPL :
+		- Apple 
+	- AMAT :
+		- Applied Materials 
+	- ASML :
+		- ASML  
+	- TEAM :
+		- Atlassianoration PLC
+	- ADSK :
+		- Autodesk 
+	- ATVI :
+		- Activision Blizzard 
+	- ADP :
+		- Automatic Data Processing 
+	- AVGO :
+		- Broadcom 
+	- BIDU :
+		- Baidu 
+	- BIIB :
+		- Biogen 
+	- BMRN :
+		- Biomarin Pharmaceutical 
+	- BKNG :
+		- Booking  
+	- CDNS :
+		- Cadence Design Systems 
+	- CDW :
+	- CERN :
+		- Cerner
+	- CHKP :
+		- Check Point Software Technologies 
+	- CHTR :
+		- Charter Communications 
+	- CPRT :
+		- Copart 
+	- CRWD :
+		- CrowdStrike  
+	- CTAS :
+		- Cintas
+	- CSCO :
+		- Cisco Systems 
+	- CMCSA :
+		- Comcast
+	- COST :
+		- Costco Wholesale
+	- CSX :
+	- CTSH :
+		- Cognizant Technology Solutions
+	- DOCU :
+		- DocuSign 
+	- DXCM :
+		- Dexcom 
+	- DLTR :
+		- Dollar Tree 
+	- EA :
+		- Electronic Arts
+	- EBAY :
+		- eBay 
+	- EXC :
+		- Exelon
+	- FAST :
+		- Fastenal Co
+	- FB :
+		- Meta Platforms 
+		- facebook
+	- FISV :
+		- Fiserv 
+	- FOX :
+		- Fox. 
+	- FOXA :
+		- Fox. 
+	- GILD :
+		- Gilead Sciences 
+	- GOOG :
+		- Alphabet Class C
+	- GOOGL :
+		- Alphabet 
+	- HON :
+		- Honeywell International 
+	- ILMN :
+		- Illumina 
+	- INCY :
+		- yte
+	- INTC :
+		- Intel
+	- INTU :
+		- Intuit 
+	- ISRG :
+		- Intuitive Surgical 
+	- MRVL :
+		- Marvell Technology 
+	- IDXX :
+		- IDEXX Laboratories 
+	- JD :
+		- JD.Com 
+	- KDP :
+		- Keurig Dr Pepper 
+	- KLAC :
+		- KLA
+	- KHC :
+		- Kraft Heinz Co
+	- LRCX :
+		- Lam Research
+	- LULU :
+		- Lululemon Athletica 
+	- MELI :
+		- Mercadolibre 
+	- MAR :
+		- Marriott International 
+	- MTCH :
+		- Match Group 
+	- MCHP :
+		- Microchip Technology 
+	- MDLZ :
+		- Mondelez International 
+	- MRNA :
+		- Moderna 
+	- MNST :
+		- Monster Beverage
+	- MSFT :
+		- Microsoft
+	- MU :
+		- Micron Technology 
+	- NFLX :
+		- Netflix 
+	- NTES :
+		- NetEase 
+	- NVDA :
+		- IDIA
+		- nvidia
+	- NXPI :
+		- NXP Semiconductors 
+	- OKTA :
+		- Okta 
+	- ORLY :
+		- O�Reilly Automotive 
+	- PAYX :
+		- Paychex 
+	- PCAR :
+		- Paccar 
+	- PDD :
+		- Pinduoduo 
+	- PTON :
+		- Peloton Interactive 
+	- PYPL :
+		- PayPal  
+	- PEP :
+		- PepsiCo 
+	- QCOM :
+		- Qualcomm 
+	- REGN :
+		- Regeneron Pharmaceuticals 
+	- ROST :
+		- Ross Stores 
+	- SIRI :
+		- Sirius XM  
+	- SGEN :
+		- Seagen 
+	- SPLK :
+		- Splunk 
+	- SWKS :
+		- Skyworks Solutions 
+	- SBUX :
+		- Starbucks
+	- SNPS :
+		- Synopsys 
+	- TCOM :
+		- Trip.com Group 
+	- TSLA :
+		- Tesla 
+	- TXN :
+		- Texas Instruments 
+	- TMUS :
+		- T-Mobile US 
+	- VRSN :
+		- Verisign 
+	- VRSK :
+		- Verisk Analytics 
+	- VRTX :
+		- Vertex Pharmaceuticals 
+	- WBA :
+		- Walgreens Boots Alliance 
+	- WDAY :
+		- Workday 
+	- XEL :
+		- Xcel Energy 
+	- XLNX :
+		- Xilinx 
+	- ZM :
+		- Zoom Video Communications 
+
+
+> # RegEx entities
+
+

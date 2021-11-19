@@ -23,6 +23,4 @@
 ]
 
 # SendActivity_KVqaiR_text()
-- ${@StockSymbol} is doing awesome !
-- ${@StockSymbol} is doing so and so !
-- ${@StockSymbol} is having a bad day today !
+- ${@StockSymbol}

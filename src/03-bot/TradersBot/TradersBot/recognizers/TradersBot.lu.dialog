@@ -3,6 +3,7 @@
   "id": "LUIS_TradersBot",
   "recognizers": {
     "en-us": "TradersBot.en-us.lu",
-    "": "TradersBot.en-us.lu"
+    "": "TradersBot.en-us.lu",
+    "nl-be": "TradersBot.en-us.lu"
   }
 }
